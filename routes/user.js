@@ -52,7 +52,7 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 // GET Single user by ID route:
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
 
     // Ommit the password and return other properties in the user object.
     const { password, ...others } = user._doc;

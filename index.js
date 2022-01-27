@@ -5,6 +5,10 @@ const dotenv = require("dotenv");
 const userRoute = require("./routes/user");
 const authRoute = require("./routes/auth");
 const productRoute = require("./routes/product");
+const cartRoute = require("./routes/cart");
+const orderRoute = require("./routes/order");
+// const stripeRoute = require("./routes/stripe");
+const cors = require("cors");
 
 //
 dotenv.config();
@@ -16,6 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 // Middlewares
+app.use(cors());
 app.use(express.json());
 
 // User routes
@@ -24,6 +29,15 @@ app.use("/api/users", userRoute);
 
 // Products route
 app.use("/api/products", productRoute);
+
+// Cart route
+app.use("/api/carts", cartRoute);
+
+// Order route
+app.use("/api/orders", orderRoute);
+
+// Stripe route
+// app.use("/api/checkout", stripeRoute);
 
 // Initiates environment to  listen to server running at port 5000
 app.listen(process.env.PORT || 5000, () => {

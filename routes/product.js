@@ -22,8 +22,8 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
   }
 });
 
-// // Admin role only:
-// // UPDATE a single product route:
+// Admin role only:
+// UPDATE a single product route:
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
     //   Set and update the user data
@@ -35,8 +35,8 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
       { new: true }
     );
 
-    // Returns the updated user data to client
-    res.status(200).json(updatedUser);
+    // Returns the updated product data to client
+    res.status(200).json(updatedProduct);
 
     // Catch error
   } catch (error) {
@@ -44,86 +44,63 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   }
 });
 
-// // Authorize user token middleware:
-// // DELETE user by ID route:
-// router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
-//   try {
-//     await User.findByIdAndDelete(req.params.id);
-//     res.status(200).json("User has been deleted!");
+// Admin role only:
+// DELETE user by ID route:
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
 
-//     // Catch error
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
+    // Return an OK status with a message.
+    res.status(200).json("Product has been deleted!");
 
-// // Admin role:
-// // GET Single user by ID route:
-// router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
-//   try {
-//     const user = await User.findByIdAndDelete(req.params.id);
+    // Catch error
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
-//     // Ommit the password and return other properties in the user object.
-//     const { password, ...others } = user._doc;
+// GET Single product by ID route:
+router.get("/find/:id", async (req, res) => {
+  try {
+    // find product by ID.
+    const product = await Product.findById(req.params.id);
 
-//     // Returns the data to the client as Json.
-//     res.status(200).json(others);
+    // Returns the data to the client as Json.
+    res.status(200).json(product);
 
-//     // Catch error
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
+    // Catch error
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
-// // Admin role:
-// // GET all users:
-// router.get("/", verifyTokenAndAdmin, async (req, res) => {
-//   // checks for query if new is true
-//   const query = req.query.new;
-//   try {
-//     const users = query
-//       ? await User.find().sort({ _id: -1 }).limit(5)
-//       : await User.find();
+// GET all products:
+router.get("/", async (req, res) => {
+  // checks for query
+  const qNew = req.query.new;
+  const qCategory = req.query.category;
+  try {
+    let products;
 
-//     // Returns the data to the client as Json.
-//     res.status(200).json(users);
+    if (qNew) {
+      products = await Product.find().sort({ createdAt: -1 }).limit(1);
+    } else if (qCategory) {
+      products = await Product.find({
+        categories: {
+          $in: [qCategory],
+        },
+      });
+    } else {
+      products = await Product.find();
+    }
 
-//     // Catch error
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
+    // Returns the data to the client as Json.
+    res.status(200).json(products);
 
-// // Admin role:
-// // GET user stats:
-// router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
-//   // get the number of users joined in the last year.
-//   const date = new Date();
-//   const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
-
-//   try {
-//     const data = await User.aggregate([
-//       { $match: { createdAt: { $gte: lastYear } } },
-//       {
-//         $project: {
-//           month: {
-//             $month: "$createdAt",
-//           },
-//         },
-//       },
-//       {
-//         $group: {
-//           _id: "$month",
-//           total: { $sum: 1 },
-//         },
-//       },
-//     ]);
-
-//     // Returns the data to the client as Json.
-//     res.status(200).json(data);
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
+    // Catch error
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 module.exports = router;
