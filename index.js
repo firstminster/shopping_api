@@ -40,6 +40,6 @@ app.use("/api/orders", orderRoute);
 app.use("/api/checkout", stripeRoute);
 
 // Initiates environment to  listen to server running at port 5000
-app.listen(process.env.PORT || 7000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log("Backend server is running");
 });
