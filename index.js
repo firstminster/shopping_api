@@ -7,10 +7,10 @@ const authRoute = require("./routes/auth");
 const productRoute = require("./routes/product");
 const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes/order");
-// const stripeRoute = require("./routes/stripe");
+const stripeRoute = require("./routes/stripe");
 const cors = require("cors");
 
-//
+// dotenv
 dotenv.config();
 
 // Connects the client to the Mongo database
@@ -21,7 +21,7 @@ mongoose
 
 // Middlewares
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); // Same as bodyParser
 
 // User routes
 app.use("/api/auth", authRoute);
@@ -37,9 +37,9 @@ app.use("/api/carts", cartRoute);
 app.use("/api/orders", orderRoute);
 
 // Stripe route
-// app.use("/api/checkout", stripeRoute);
+app.use("/api/checkout", stripeRoute);
 
 // Initiates environment to  listen to server running at port 5000
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT || 7000, () => {
   console.log("Backend server is running");
 });
