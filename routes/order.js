@@ -1,5 +1,5 @@
-const router = require("express").Router();
 const Order = require("../models/Order");
+const router = require("express").Router();
 const {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -92,6 +92,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 
 // Admin role only:
 // GET monthly income:
+
 router.get("/income", verifyTokenAndAdmin, async (req, res) => {
   const date = new Date();
   const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
